@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/pessoas")
 public class PessoaController {
@@ -14,7 +16,7 @@ public class PessoaController {
   private IPessoaRepository repository;
 
   @PostMapping()
-  public PessoaModel criaPessoa(@RequestBody PessoaModel pessoa) {
+  public PessoaModel criaPessoa(@Valid @RequestBody PessoaModel pessoa) {
     var novaPessoa = new PessoaModel(
         null,
         pessoa.getApelido(),
