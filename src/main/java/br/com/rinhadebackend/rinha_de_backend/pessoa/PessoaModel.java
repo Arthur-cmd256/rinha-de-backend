@@ -12,13 +12,16 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Entity
 @Data
+@NoArgsConstructor
 @AllArgsConstructor
+@Entity
 @Table(name = "Pessoa")
 public class PessoaModel {
 
@@ -32,19 +35,22 @@ public class PessoaModel {
   @GeneratedValue(strategy = GenerationType.UUID)
   private UUID id;
 
+  @NotNull(message = "Apelido não pode ser nulo")
   @Column(columnDefinition = "VARCHAR(32)", unique = true, nullable = false)
   private String apelido;
 
-  @Pattern(regexp = "^[^\\d]+$")
+  @Pattern(regexp = "^[^\\d]+$", message = "Nome deve ser string e não número")
+  @NotNull(message = "Nome não pode ser nulo")
   @Column(columnDefinition = "VARCHAR(100)", nullable = false)
   private String nome;
 
+  @NotNull(message = "Data de nascimento não pode ser nula")
   @Column(columnDefinition = "VARCHAR(10)", nullable = false)
   private String nascimento;
 
   @ElementCollection
   @CollectionTable(name = "stack", joinColumns = @JoinColumn(name = "id"))
   @Column(name = "valor", columnDefinition = "VARCHAR(32)", nullable = false)
-  private List<@Pattern(regexp = "^[^\\d]+$") String> stack;
+  private List<@Pattern(regexp = "^[^\\d]+$", message = "Stack deve ser string e não número") @NotNull(message = "Stack não pode ser nulo") String> stack;
 
 }
