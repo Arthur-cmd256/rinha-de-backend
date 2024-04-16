@@ -53,4 +53,10 @@ public class PessoaModel {
   @Column(name = "valor", columnDefinition = "VARCHAR(32)", nullable = false)
   private List<@Pattern(regexp = "^[^\\d]+$", message = "Stack deve ser string e não número") @NotNull(message = "Stack não pode ser nulo") String> stack;
 
+  public List<String> getStack() {
+    if (this.stack != null && this.stack.size() <= 0)
+      this.stack = null;
+    return this.stack;
+  }
+
 }

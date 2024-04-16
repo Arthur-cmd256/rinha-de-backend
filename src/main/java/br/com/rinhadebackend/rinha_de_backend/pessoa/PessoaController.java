@@ -1,5 +1,7 @@
 package br.com.rinhadebackend.rinha_de_backend.pessoa;
 
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -12,6 +14,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequestMapping("/pessoas")
@@ -51,6 +56,25 @@ public class PessoaController {
       return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(err.getMessage());
     }
     return ResponseEntity.internalServerError().build();
+  }
+
+  @GetMapping("/{id}")
+  public ResponseEntity<?> getDetalhesPessoa(@PathVariable UUID id) {
+
+    try {
+      PessoaModel pessoa = repository.findById(id).orElse(null);
+      if (pessoa == null)
+        throw new NullPointerException();
+
+      return ResponseEntity.ok(pessoa);
+    } catch (NullPointerException e) {
+      return ResponseEntity.notFound().build();
+    }
+  }
+
+  @GetMapping("")
+  public String getMethodName(@RequestParam String t) {
+    return new String();
   }
 
 }
