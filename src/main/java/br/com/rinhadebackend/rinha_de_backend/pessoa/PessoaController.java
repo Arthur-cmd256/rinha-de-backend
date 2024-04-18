@@ -1,5 +1,6 @@
 package br.com.rinhadebackend.rinha_de_backend.pessoa;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +19,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -90,9 +94,26 @@ public class PessoaController {
     }
   }
 
+  @Validated
   @GetMapping("")
-  public String getMethodName(@RequestParam String t) {
-    return new String();
+  // public ResponseEntity<?> getMethodName(@RequestParam @NotBlank String t,
+  // BindingResult result)
+  public ResponseEntity<?> getMethodName(@RequestParam(defaultValue = "") String t) {
+    try {
+      if (t.equals("")) {
+        throw new IllegalArgumentException();
+      }
+      List<PessoaModel> pessoa = repository.buscaPorTermo(t);
+
+      return ResponseEntity.ok(
+          mapper.writerWithDefaultPrettyPrinter().withView(PessoaViews.RetornoDetalhePessoa.class)
+              .writeValueAsString(pessoa));
+    } catch (IllegalArgumentException e) {
+      return ResponseEntity.badRequest().body("O parametro t é obrigatório");
+    } catch (JsonProcessingException e) {
+      e.printStackTrace();
+      return ResponseEntity.internalServerError().build();
+    }
   }
 
 }
