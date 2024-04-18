@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,9 +28,12 @@ public class PessoaController {
   @Autowired
   private IPessoaRepository repository;
 
+  ObjectMapper mapper = new ObjectMapper();
+
   @PostMapping()
   public ResponseEntity<?> criaPessoa(@Valid @RequestBody PessoaModel pessoa, BindingResult result) {
     try {
+
       if (!result.hasErrors()) {
 
         if (repository.buscaPorApelido(pessoa.getApelido()) != null) {
@@ -40,7 +46,12 @@ public class PessoaController {
             pessoa.getNome(),
             pessoa.getNascimento(),
             pessoa.getStack());
-        return ResponseEntity.ok(repository.save(novaPessoa));
+
+        return ResponseEntity.ok(
+            mapper.writerWithDefaultPrettyPrinter()
+                .withView(PessoaViews.RetornoCriacaoPessoa.class).writeValueAsString(
+                    repository.save(novaPessoa)));
+
       }
       for (FieldError fieldError : result.getFieldErrors()) {
         switch (fieldError.getCode()) {
@@ -54,6 +65,8 @@ public class PessoaController {
       }
     } catch (DataIntegrityViolationException err) {
       return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(err.getMessage());
+    } catch (JsonProcessingException e) {
+      e.printStackTrace();
     }
     return ResponseEntity.internalServerError().build();
   }
@@ -66,9 +79,14 @@ public class PessoaController {
       if (pessoa == null)
         throw new NullPointerException();
 
-      return ResponseEntity.ok(pessoa);
+      return ResponseEntity.ok(
+          mapper.writerWithDefaultPrettyPrinter().withView(PessoaViews.RetornoDetalhePessoa.class)
+              .writeValueAsString(pessoa));
     } catch (NullPointerException e) {
       return ResponseEntity.notFound().build();
+    } catch (JsonProcessingException e) {
+      e.printStackTrace();
+      return ResponseEntity.internalServerError().build();
     }
   }
 

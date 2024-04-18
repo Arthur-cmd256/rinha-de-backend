@@ -3,6 +3,8 @@ package br.com.rinhadebackend.rinha_de_backend.pessoa;
 import java.util.List;
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonView;
+
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
@@ -24,30 +26,28 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "Pessoa")
 public class PessoaModel {
-
-  // @Id
-  // @GeneratedValue(strategy = GenerationType.IDENTITY, generator =
-  // "sequence_id_pessoas")
-  // @SequenceGenerator(name = "sequence_id_pessoas", sequenceName =
-  // "sequence_pessoa", allocationSize = 1)
-  // private Long id;
+  @JsonView(PessoaViews.RetornoDetalhePessoa.class)
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
   private UUID id;
 
+  @JsonView(PessoaViews.RetornoCriacaoPessoa.class)
   @NotNull(message = "Apelido não pode ser nulo")
   @Column(columnDefinition = "VARCHAR(32)", unique = true, nullable = false)
   private String apelido;
 
+  @JsonView(PessoaViews.RetornoCriacaoPessoa.class)
   @Pattern(regexp = "^[^\\d]+$", message = "Nome deve ser string e não número")
   @NotNull(message = "Nome não pode ser nulo")
   @Column(columnDefinition = "VARCHAR(100)", nullable = false)
   private String nome;
 
+  @JsonView(PessoaViews.RetornoCriacaoPessoa.class)
   @NotNull(message = "Data de nascimento não pode ser nula")
   @Column(columnDefinition = "VARCHAR(10)", nullable = false)
   private String nascimento;
 
+  @JsonView(PessoaViews.RetornoCriacaoPessoa.class)
   @ElementCollection
   @CollectionTable(name = "stack", joinColumns = @JoinColumn(name = "id"))
   @Column(name = "valor", columnDefinition = "VARCHAR(32)", nullable = false)
