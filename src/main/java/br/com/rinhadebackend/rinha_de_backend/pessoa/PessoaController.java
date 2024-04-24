@@ -96,8 +96,6 @@ public class PessoaController {
 
   @Validated
   @GetMapping("")
-  // public ResponseEntity<?> getMethodName(@RequestParam @NotBlank String t,
-  // BindingResult result)
   public ResponseEntity<?> getMethodName(@RequestParam(defaultValue = "") String t) {
     try {
       if (t.equals("")) {
@@ -116,4 +114,12 @@ public class PessoaController {
     }
   }
 
+  @GetMapping("contagem-pessoas")
+  public ResponseEntity<String> contagemPessoas() {
+    try {
+      return ResponseEntity.ok(repository.contaPessoas());
+    } catch (Exception e) {
+      return ResponseEntity.internalServerError().build();
+    }
+  }
 }

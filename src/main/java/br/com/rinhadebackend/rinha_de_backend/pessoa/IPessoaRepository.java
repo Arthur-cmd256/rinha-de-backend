@@ -24,4 +24,6 @@ public interface IPessoaRepository extends JpaRepository<PessoaModel, UUID> {
       """, nativeQuery = true)
   List<PessoaModel> buscaPorTermo(String termo);
 
+  @Query("select count(p) from PessoaModel p")
+  String contaPessoas();
 }
