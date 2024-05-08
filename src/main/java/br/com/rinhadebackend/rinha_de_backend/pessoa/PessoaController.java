@@ -14,12 +14,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -51,11 +51,13 @@ public class PessoaController {
             pessoa.getNascimento(),
             pessoa.getStack());
 
-        return ResponseEntity.ok(
-            mapper.writerWithDefaultPrettyPrinter()
-                .withView(PessoaViews.RetornoCriacaoPessoa.class).writeValueAsString(
-                    repository.save(novaPessoa)));
-
+        PessoaModel pessoaSalva = repository.save(novaPessoa);
+        return ResponseEntity.created(
+            ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(pessoaSalva.getId()).toUri())
+            .body(
+                mapper.writerWithDefaultPrettyPrinter()
+                    .withView(PessoaViews.RetornoCriacaoPessoa.class).writeValueAsString(
+                        repository.save(novaPessoa)));
       }
       for (FieldError fieldError : result.getFieldErrors()) {
         switch (fieldError.getCode()) {

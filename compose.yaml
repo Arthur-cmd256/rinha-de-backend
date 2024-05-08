@@ -9,10 +9,11 @@
 # https://github.com/docker/awesome-compose
 services:
   api1:
-    image: eclipse-temurin:17-jdk-jammy
+    # image: eclipse-temurin:17-jdk-jammy
+    image: arthurcmd256/rinha-de-backend:1.0.2
     # build:
     #   context: .
-    command: sh -c "./mvnw spring-boot:run"
+    # command: sh -c "./mvnw spring-boot:run"
     deploy:
       resources:
         limits:
@@ -23,9 +24,9 @@ services:
     networks:
       rinha-de-backend:
         ipv4_address: 10.0.0.3
-    working_dir: /app
-    volumes:
-      - ./:/app
+    # working_dir: /app
+    # volumes:
+    #   - ./:/app
     # The commented out section below is an example of how to define a PostgreSQL
     # database that your application can use. `depends_on` tells Docker Compose to
     # start the database before your application. The `db-data` volume persists the
@@ -37,10 +38,11 @@ services:
         condition: service_healthy
 
   api2:
-    image: eclipse-temurin:17-jdk-jammy
+    # image: eclipse-temurin:17-jdk-jammy
+    image: arthurcmd256/rinha-de-backend:1.0.2
     # build:
     #   context: .
-    command: sh -c "./mvnw spring-boot:run"
+    # command: sh -c "./mvnw spring-boot:run"
     deploy:
       resources:
         limits:
@@ -51,9 +53,9 @@ services:
     networks:
       rinha-de-backend:
         ipv4_address: 10.0.0.4
-    working_dir: /app
-    volumes:
-      - ./:/app
+    # working_dir: /app
+    # volumes:
+    #   - ./:/app
     # The commented out section below is an example of how to define a PostgreSQL
     # database that your application can use. `depends_on` tells Docker Compose to
     # start the database before your application. The `db-data` volume persists the
